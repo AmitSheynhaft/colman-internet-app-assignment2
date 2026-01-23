@@ -13,7 +13,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       profilePicture?: string;
     };
 
-    // Validate required fields
     if (!username || !email) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
@@ -22,7 +21,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    // Check if user with same username already exists
     const existingUserByUsername = await User.findOne({ username });
     if (existingUserByUsername) {
       res.status(HTTP_STATUS.CONFLICT).json({
@@ -32,7 +30,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    // Check if user with same email already exists
     const existingUserByEmail = await User.findOne({ email });
     if (existingUserByEmail) {
       res.status(HTTP_STATUS.CONFLICT).json({
@@ -42,7 +39,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    // Create new user
     const newUser = new User({
       username,
       email,
