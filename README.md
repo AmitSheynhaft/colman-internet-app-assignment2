@@ -18,7 +18,6 @@ A modern Node.js application built with Express and TypeScript.
 │   ├── server.ts           # Application entry point
 │   ├── routes/             # Route definitions
 │   │   ├── index.ts        # Route aggregator
-│   │   └── example.routes.ts
 │   └── middleware/         # Custom middleware
 │       └── errorHandler.ts
 ├── dist/                   # Compiled JavaScript output
@@ -68,8 +67,6 @@ npm start
 ## Available Endpoints
 
 - `GET /health` - Health check endpoint
-- `GET /api/example` - Example GET endpoint
-- `POST /api/example` - Example POST endpoint
 
 ## Environment Variables
 

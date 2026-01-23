@@ -196,3 +196,57 @@ Content-Type: application/json
     "name": "John Doe"
   }
 }
+
+########################################
+# POST API - CREATE USER
+########################################
+
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+  "username": "johndoe123",
+  "email": "john.doe@example.com",
+  "password": "securePassword123",
+  "age": 28,
+  "bio": "Software developer passionate about web technologies",
+  "profilePicture": "https://example.com/profile/johndoe.jpg"
+}
+
+### Create User
+# Method: POST
+# URL: /api/users
+# Description: Creates a new user with username, email, and optional profile information
+# 
+# Required Fields:
+# - username: string (3-30 chars, alphanumeric and underscores only, unique)
+# - email: string (valid email format, unique)
+#
+# Optional Fields:
+# - password: string
+# - age: number (0-150)
+# - bio: string (max 500 chars)
+# - profilePicture: string (URL)
+# 
+# Expected Response: 201 Created
+# Response Format:
+# {
+#   "success": true,
+#   "message": "User created successfully",
+#   "data": {
+#     "_id": "string",
+#     "username": "string",
+#     "email": "string",
+#     "password": "string",
+#     "refreshTokens": [],
+#     "age": number,
+#     "bio": "string",
+#     "profilePicture": "string",
+#     "createdAt": "ISO date string",
+#     "updatedAt": "ISO date string"
+#   }
+# }
+#
+# Error Responses:
+# - 400 Bad Request: Missing required fields or validation errors
+# - 409 Conflict: Username or email already exists

@@ -1,23 +1,27 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-// Example interface for a User document
 export interface IUser extends Document {
-  name: string;
+  username: string;
   email: string;
+  password?: string;
+  refreshTokens?: string[];
   age?: number;
+  bio?: string;
+  profilePicture?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Example User schema
 const userSchema = new Schema<IUser>(
   {
-    name: {
+    username: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, "Username is required"],
+      unique: true,
       trim: true,
-      minlength: [2, "Name must be at least 2 characters"],
-      maxlength: [50, "Name cannot exceed 50 characters"],
+      minlength: [3, "Username must be at least 3 characters"],
+      maxlength: [30, "Username cannot exceed 30 characters"],
+      match: [/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"],
     },
     email: {
       type: String,
@@ -27,10 +31,27 @@ const userSchema = new Schema<IUser>(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
     },
+    password: {
+      type: String,
+      trim: true,
+    },
+    refreshTokens: {
+      type: [String],
+      default: [],
+    },
     age: {
       type: Number,
       min: [0, "Age cannot be negative"],
       max: [150, "Age seems invalid"],
+    },
+    bio: {
+      type: String,
+      trim: true,
+      maxlength: [500, "Bio cannot exceed 500 characters"],
+    },
+    profilePicture: {
+      type: String,
+      trim: true,
     },
   },
   {
@@ -39,14 +60,7 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-// Add indexes for better query performance
-userSchema.index({ email: 1 });
-
-// Example of a pre-save middleware
-userSchema.pre("save", function (next) {
-  console.log("Saving user:", this.name);
-  next();
-});
-
 // Export the model
-export const User = mongoose.model<IUser>("User", userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
+
+export default User;
