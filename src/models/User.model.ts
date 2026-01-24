@@ -1,16 +1,5 @@
-import mongoose, { Document, Schema } from "mongoose";
-
-export interface IUser extends Document {
-  username: string;
-  email: string;
-  password?: string;
-  refreshTokens?: string[];
-  age?: number;
-  bio?: string;
-  profilePicture?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import mongoose, { Schema } from "mongoose";
+import { IUser } from "../constants/constants";
 
 const userSchema = new Schema<IUser>(
   {
