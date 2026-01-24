@@ -2,9 +2,11 @@ import express, { Application } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import swaggerUi from "swagger-ui-express";
 import routes from "./routes";
 import { errorHandler } from "./middleware/errorHandler";
 import connectDB from "./config/database";
+import swaggerSpec from "./config/swagger";
 
 // Load environment variables
 dotenv.config();
@@ -19,6 +21,9 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Swagger Documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use("/api", routes);
@@ -57,6 +62,19 @@ app.get("/", (req, res) => {
           .running { background: #d4edda; color: #155724; }
           .connected { background: #d1ecf1; color: #0c5460; }
           .disconnected { background: #f8d7da; color: #721c24; }
+          .link {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            font-weight: bold;
+          }
+          .link:hover {
+            background: #764ba2;
+          }
         </style>
       </head>
       <body>
@@ -68,6 +86,7 @@ app.get("/", (req, res) => {
           <div class="status ${dbStatus === 'Connected' ? 'connected' : 'disconnected'}">
             ${dbStatus === 'Connected' ? '✅' : '❌'} MongoDB: ${dbStatus}
           </div>
+          <a href="/api-docs" class="link">📚 View API Documentation</a>
         </div>
       </body>
     </html>
