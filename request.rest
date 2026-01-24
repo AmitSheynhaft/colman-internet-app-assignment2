@@ -267,6 +267,52 @@ GET http://localhost:3001/api/users/<user_id>
 # }
 
 ########################################
+# PUT API - UPDATE USER
+########################################
+
+PUT http://localhost:3001/api/users/<user_id>
+Content-Type: application/json
+
+{
+  "username": "johndoe456",
+  "email": "john.updated@example.com",
+  "password": "newPassword123",
+  "age": 30,
+  "bio": "Updated bio - Senior software developer",
+  "profilePicture": "https://example.com/profile/updated.jpg"
+}
+
+### Update User
+# Method: PUT
+# URL: /api/users/:id
+# Description: Updates an existing user's information
+# 
+# Expected Response: 200 OK
+# Response Format:
+# {
+#   "success": true,
+#   "message": "User updated successfully",
+#   "data": {
+#     "_id": "string",
+#     "username": "string",
+#     "email": "string",
+#     "password": "string",
+#     "refreshTokens": [],
+#     "age": number,
+#     "bio": "string",
+#     "profilePicture": "string",
+#     "createdAt": "ISO date string",
+#     "updatedAt": "ISO date string"
+#   }
+# }
+#
+# Error Response (404):
+# {
+#   "success": false,
+#   "message": "User not found"
+# }
+
+########################################
 # POST API - CREATE USER
 ########################################
 

@@ -9,6 +9,18 @@ export const HTTP_STATUS = {
   INTERNAL_SERVER_ERROR: 500,
 } as const;
 
+export interface IUser extends Document {
+  username: string;
+  email: string;
+  password?: string;
+  refreshTokens?: string[];
+  age?: number;
+  bio?: string;
+  profilePicture?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface IPost extends Document {
   title: string;
   content: string;
