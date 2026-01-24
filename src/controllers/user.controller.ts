@@ -21,6 +21,35 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
+export const getUserById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      res.status(HTTP_STATUS.NOT_FOUND).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
+    }
+
+    res.status(HTTP_STATUS.OK).json({
+      success: true,
+      message: "User retrieved successfully",
+      data: user,
+    });
+  } catch (error: any) {
+    console.error("Error retrieving user:", error);
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, email, password, age, bio, profilePicture } = req.body as {
