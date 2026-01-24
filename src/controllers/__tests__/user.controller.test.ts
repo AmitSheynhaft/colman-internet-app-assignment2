@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUser, getAllUsers } from "../user.controller";
+import { createUser, getAllUsers, getUserById } from "../user.controller";
 import User from "../../models/User.model";
 import { HTTP_STATUS } from "../../constants/constants";
 
@@ -55,6 +55,53 @@ describe("getAllUsers", () => {
 
     await getAllUsers(mockRequest as Request, mockResponse as Response);
 
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  });
+});
+
+describe("getUserById", () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let jsonMock: jest.Mock;
+  let statusMock: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jsonMock = jest.fn();
+    statusMock = jest.fn().mockReturnValue({ json: jsonMock });
+    mockResponse = { status: statusMock };
+    mockRequest = { params: {} };
+  });
+
+  it("should return user by id successfully", async () => {
+    const mockUser = { _id: "123", username: "testuser", email: "test@example.com" };
+    mockRequest.params = { id: "123" };
+    (User.findById as jest.Mock).mockResolvedValue(mockUser);
+    await getUserById(mockRequest as Request, mockResponse as Response);
+    expect(User.findById).toHaveBeenCalledWith("123");
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.OK);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      message: "User retrieved successfully",
+      data: mockUser,
+    });
+  });
+
+  it("should return 404 if user not found", async () => {
+    mockRequest.params = { id: "999" };
+    (User.findById as jest.Mock).mockResolvedValue(null);
+    await getUserById(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.NOT_FOUND);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "User not found",
+    });
+  });
+
+  it("should handle database errors", async () => {
+    mockRequest.params = { id: "123" };
+    (User.findById as jest.Mock).mockRejectedValue(new Error("DB error"));
+    await getUserById(mockRequest as Request, mockResponse as Response);
     expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   });
 });

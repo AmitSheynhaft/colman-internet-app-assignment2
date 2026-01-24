@@ -231,6 +231,42 @@ GET http://localhost:3001/api/users
 # }
 
 ########################################
+# GET API - GET USER BY ID
+########################################
+
+GET http://localhost:3001/api/users/<user_id>
+
+### Get User by ID
+# Method: GET
+# URL: /api/users/:id
+# Description: Retrieves a single user by their ID
+# 
+# Expected Response: 200 OK
+# Response Format:
+# {
+#   "success": true,
+#   "message": "User retrieved successfully",
+#   "data": {
+#     "_id": "string",
+#     "username": "string",
+#     "email": "string",
+#     "password": "string",
+#     "refreshTokens": [],
+#     "age": number,
+#     "bio": "string",
+#     "profilePicture": "string",
+#     "createdAt": "ISO date string",
+#     "updatedAt": "ISO date string"
+#   }
+# }
+#
+# Error Response (404):
+# {
+#   "success": false,
+#   "message": "User not found"
+# }
+
+########################################
 # POST API - CREATE USER
 ########################################
 

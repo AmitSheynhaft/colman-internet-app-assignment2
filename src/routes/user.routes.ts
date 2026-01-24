@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, getAllUsers } from "../controllers/user.controller";
+import { createUser, getAllUsers, getUserById } from "../controllers/user.controller";
 
 const router = Router();
 
@@ -119,5 +119,45 @@ router.get("/", getAllUsers);
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/", createUser);
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   get:
+ *     summary: Get user by ID
+ *     description: Retrieves a single user by their ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID (MongoDB ObjectId)
+ *         example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: User retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               success: false
+ *               message: User not found
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get("/:id", getUserById);
 
 export default router;
