@@ -2,6 +2,25 @@ import { Request, Response } from "express";
 import User from "../models/User.model";
 import { HTTP_STATUS } from "../constants/constants";
 
+export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const users = await User.find();
+
+    res.status(HTTP_STATUS.OK).json({
+      success: true,
+      message: "Users retrieved successfully",
+      data: users,
+    });
+  } catch (error: any) {
+    console.error("Error retrieving users:", error);
+    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, email, password, age, bio, profilePicture } = req.body as {
