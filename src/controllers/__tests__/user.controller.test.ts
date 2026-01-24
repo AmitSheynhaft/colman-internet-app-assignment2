@@ -1,9 +1,63 @@
 import { Request, Response } from "express";
-import { createUser } from "../user.controller";
+import { createUser, getAllUsers } from "../user.controller";
 import User from "../../models/User.model";
 import { HTTP_STATUS } from "../../constants/constants";
 
 jest.mock("../../models/User.model");
+
+describe("getAllUsers", () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let jsonMock: jest.Mock;
+  let statusMock: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jsonMock = jest.fn();
+    statusMock = jest.fn().mockReturnValue({ json: jsonMock });
+    mockResponse = { status: statusMock };
+    mockRequest = {};
+  });
+
+  it("should return all users successfully", async () => {
+    const mockUsers = [
+      { _id: "1", username: "user1", email: "user1@example.com" },
+      { _id: "2", username: "user2", email: "user2@example.com" },
+    ];
+    (User.find as jest.Mock).mockResolvedValue(mockUsers);
+
+    await getAllUsers(mockRequest as Request, mockResponse as Response);
+
+    expect(User.find).toHaveBeenCalled();
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.OK);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      message: "Users retrieved successfully",
+      data: mockUsers,
+    });
+  });
+
+  it("should return empty array when no users exist", async () => {
+    (User.find as jest.Mock).mockResolvedValue([]);
+
+    await getAllUsers(mockRequest as Request, mockResponse as Response);
+
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.OK);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      message: "Users retrieved successfully",
+      data: [],
+    });
+  });
+
+  it("should handle database errors", async () => {
+    (User.find as jest.Mock).mockRejectedValue(new Error("DB error"));
+
+    await getAllUsers(mockRequest as Request, mockResponse as Response);
+
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  });
+});
 
 describe("createUser", () => {
   let mockRequest: Partial<Request>;

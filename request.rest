@@ -198,6 +198,39 @@ Content-Type: application/json
 }
 
 ########################################
+# GET API - GET ALL USERS
+########################################
+
+GET http://localhost:3001/api/users
+
+### Get All Users
+# Method: GET
+# URL: /api/users
+# Description: Retrieves all users from the database
+# 
+# Expected Response: 200 OK
+# Response Format:
+# {
+#   "success": true,
+#   "message": "Users retrieved successfully",
+#   "data": [
+#     {
+#       "_id": "string",
+#       "username": "string",
+#       "email": "string",
+#       "password": "string",
+#       "refreshTokens": [],
+#       "age": number,
+#       "bio": "string",
+#       "profilePicture": "string",
+#       "createdAt": "ISO date string",
+#       "updatedAt": "ISO date string"
+#     },
+#     ...
+#   ]
+# }
+
+########################################
 # POST API - CREATE USER
 ########################################
 
