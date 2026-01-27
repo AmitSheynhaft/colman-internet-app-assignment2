@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUser, getAllUsers, getUserById, updateUser } from "../user.controller";
+import { createUser, getAllUsers, getUserById, updateUser, deleteUser } from "../user.controller";
 import User from "../../models/User.model";
 import { HTTP_STATUS } from "../../constants/constants";
 
@@ -207,6 +207,58 @@ describe("createUser", () => {
       success: true,
       message: "User created successfully",
       data: savedUser,
+    });
+  });
+});
+
+describe("deleteUser", () => {
+  let mockRequest: Partial<Request>;
+  let mockResponse: Partial<Response>;
+  let jsonMock: jest.Mock;
+  let statusMock: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jsonMock = jest.fn();
+    statusMock = jest.fn().mockReturnValue({ json: jsonMock });
+    mockResponse = { status: statusMock };
+    mockRequest = { params: {} };
+  });
+
+  it("should delete user successfully", async () => {
+    const userId = "507f1f77bcf86cd799439011";
+    const deletedUser = { _id: userId, username: "testuser", email: "test@example.com" };
+    mockRequest.params = { id: userId };
+    (User.findByIdAndDelete as jest.Mock).mockResolvedValue(deletedUser);
+    await deleteUser(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.OK);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: true,
+      message: "User deleted successfully",
+      data: deletedUser,
+    });
+  });
+
+  it("should return 404 if user not found", async () => {
+    mockRequest.params = { id: "507f1f77bcf86cd799439011" };
+    (User.findByIdAndDelete as jest.Mock).mockResolvedValue(null);
+    await deleteUser(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.NOT_FOUND);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "User not found",
+    });
+  });
+
+  it("should handle database error", async () => {
+    mockRequest.params = { id: "507f1f77bcf86cd799439011" };
+    (User.findByIdAndDelete as jest.Mock).mockRejectedValue(new Error("Database error"));
+    await deleteUser(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "Internal server error",
+      error: "Database error",
     });
   });
 });

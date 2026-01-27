@@ -365,3 +365,39 @@ Content-Type: application/json
 # Error Responses:
 # - 400 Bad Request: Missing required fields or validation errors
 # - 409 Conflict: Username or email already exists
+
+########################################
+# DELETE API - DELETE USER BY ID
+########################################
+
+DELETE http://localhost:3001/api/users/<user_id>
+
+### Delete User by ID
+# Method: DELETE
+# URL: /api/users/:id
+# Description: Deletes a user by their ID
+# 
+# Expected Response: 200 OK
+# Response Format:
+# {
+#   "success": true,
+#   "message": "User deleted successfully",
+#   "data": {
+#     "_id": "string",
+#     "username": "string",
+#     "email": "string",
+#     "password": "string",
+#     "refreshTokens": [],
+#     "age": number,
+#     "bio": "string",
+#     "profilePicture": "string",
+#     "createdAt": "ISO date string",
+#     "updatedAt": "ISO date string"
+#   }
+# }
+#
+# Error Response (404):
+# {
+#   "success": false,
+#   "message": "User not found"
+# }
