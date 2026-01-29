@@ -401,3 +401,73 @@ DELETE http://localhost:3001/api/users/<user_id>
 #   "success": false,
 #   "message": "User not found"
 # }
+
+########################################
+# AUTH API - REGISTER
+########################################
+
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Register
+# Method: POST
+# URL: /auth/register
+# Description: Register a new user
+# Expected Response: 200 OK
+
+########################################
+# AUTH API - LOGIN
+########################################
+
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### Login
+# Method: POST
+# URL: /auth/login
+# Description: Login with email and password
+# Expected Response: 200 OK with accessToken, refreshToken, and _id
+
+########################################
+# AUTH API - REFRESH TOKEN
+########################################
+
+POST http://localhost:3000/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "YOUR_REFRESH_TOKEN_HERE"
+}
+
+### Refresh Token
+# Method: POST
+# URL: /auth/refresh
+# Description: Get new access and refresh tokens
+# Expected Response: 200 OK with new tokens
+
+########################################
+# AUTH API - LOGOUT
+########################################
+
+POST http://localhost:3000/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "YOUR_REFRESH_TOKEN_HERE"
+}
+
+### Logout
+# Method: POST
+# URL: /auth/logout
+# Description: Logout and invalidate refresh token
+# Expected Response: 200 OK
