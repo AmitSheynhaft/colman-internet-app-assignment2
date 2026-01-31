@@ -64,12 +64,12 @@ GET http://localhost:3001/api/users
 ###
 
 ### Get User by ID
-GET http://localhost:3001/api/users/697dd9167755d88d33010f99
+GET http://localhost:3001/api/users/697ddeff3d38328daaa39df0
 
 ###
 
 ### Update a User
-PUT http://localhost:3001/api/users/697dd9167755d88d33010f99
+PUT http://localhost:3001/api/users/697ddeff3d38328daaa39df0
 Content-Type: application/json
 
 {
@@ -84,6 +84,56 @@ Content-Type: application/json
 ###
 
 ### Delete a User
-DELETE http://localhost:3001/api/users/697dd9167755d88d33010f99
+DELETE http://localhost:3001/api/users/697ddeff3d38328daaa39df0
+
+###
+
+### Create a New Comment
+POST http://localhost:3001/api/comments
+Content-Type: application/json
+
+{
+  "postId": "697dce5a70a3a6007f1ae136",
+  "content": "This is my first comment!",
+  "sender": {
+    "id": 1,
+    "name": "Hodaya"
+  }
+}
+
+###
+
+### Get All Comments
+GET http://localhost:3001/api/comments
+
+###
+
+### Get Comment by ID
+GET http://localhost:3001/api/comments/697dd55099adf21625874efe
+
+###
+
+### Get Comments by Post ID
+GET http://localhost:3001/api/comments/post/697dce5a70a3a6007f1ae136
+
+###
+
+### Update Comment
+PUT http://localhost:3001/api/comments/697dd4e799adf21625874eea
+Content-Type: application/json
+
+{
+  "postId": "6974bdd74c2c3604eddc54bd",
+  "content": "Updated comment content!",
+  "sender": {
+    "id": 1,
+    "name": "Hodaya"
+  }
+}
+
+###
+
+### Delete Comment
+DELETE http://localhost:3001/api/comments/697dd55099adf21625874efe
 
 ###
