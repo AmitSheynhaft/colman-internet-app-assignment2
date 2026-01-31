@@ -16,19 +16,10 @@ const postSchema = new Schema<IPost>(
       trim: true,
       minlength: [10, "Content must be at least 10 characters"],
     },
-    sender: {
-      type: {
-        id: {
-          type: Number,
-          required: [true, "Sender ID is required"],
-        },
-        name: {
-          type: String,
-          required: [true, "Sender name is required"],
-          trim: true,
-        },
-      },
-      required: [true, "Sender is required"],
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "User is required"],
     },
   },
   {

@@ -30,7 +30,8 @@ const options: swaggerJsdoc.Options = {
             },
             username: {
               type: "string",
-              description: "Unique username (3-30 characters, alphanumeric and underscores)",
+              description:
+                "Unique username (3-30 characters, alphanumeric and underscores)",
               minLength: 3,
               maxLength: 30,
               pattern: "^[a-zA-Z0-9_]+$",
@@ -99,6 +100,45 @@ const options: swaggerJsdoc.Options = {
             },
             data: {
               $ref: "#/components/schemas/User",
+            },
+          },
+        },
+        Comment: {
+          type: "object",
+          required: ["content", "postId", "userId"],
+          properties: {
+            _id: {
+              type: "string",
+              description: "Auto-generated MongoDB ID",
+              example: "507f1f77bcf86cd799439011",
+            },
+            content: {
+              type: "string",
+              description: "Comment content (1-500 characters)",
+              minLength: 1,
+              maxLength: 500,
+              example: "This is a great post! Thanks for sharing.",
+            },
+            postId: {
+              type: "string",
+              description: "Reference to the Post (MongoDB ObjectId)",
+              example: "507f1f77bcf86cd799439012",
+            },
+            userId: {
+              type: "string",
+              description:
+                "Reference to the User who created the comment (MongoDB ObjectId)",
+              example: "507f1f77bcf86cd799439013",
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+              description: "Timestamp when comment was created",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+              description: "Timestamp when comment was last updated",
             },
           },
         },
