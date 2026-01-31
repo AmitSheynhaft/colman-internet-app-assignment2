@@ -43,6 +43,55 @@ Content-Type: application/json
 
 ###
 
+### Create a New Comment
+POST http://localhost:3001/api/comments
+Content-Type: application/json
+
+{
+  "postId": "697dce5a70a3a6007f1ae136",
+  "content": "dddddddddddddddddddd",
+  "sender": {
+    "id": 1,
+    "name": "Hodaya"
+  }
+}
+
+###
+
+### Get All Comments
+GET http://localhost:3001/api/comments
+
+###
+
+### Get Comment by ID
+GET http://localhost:3001/api/comments/697ddf173d38328daaa39df8
+
+###
+
+### Get Comments by Post ID
+GET http://localhost:3001/api/comments/post/697dce5a70a3a6007f1ae136
+
+###
+
+### Update Comment
+PUT http://localhost:3001/api/comments/697ddf173d38328daaa39df8
+Content-Type: application/json
+
+{
+  "postId": "6974bdd74c2c3604eddc54bd",
+  "content": "Updated comment content!",
+  "sender": {
+    "id": 1,
+    "name": "Hodaya"
+  }
+}
+
+###
+
+### Delete Comment
+DELETE http://localhost:3001/api/comments/697ddf173d38328daaa39df8
+
+
 ### Create a New User
 POST http://localhost:3001/api/users
 Content-Type: application/json
