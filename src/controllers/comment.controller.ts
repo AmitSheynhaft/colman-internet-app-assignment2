@@ -2,20 +2,20 @@ import mongoose from "mongoose";
 import { HTTP_STATUS } from "../constants/constants";
 import { Request, Response } from "express";
 import Comment from "../models/Comment.model";
-import { findPostById } from "./shared/functions";
+import { findPostById, findUserById} from "./shared/functions";
 
 export const createComment = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   try {
-    const { postId, content, sender } = req.body;
+    const { postId, content, senderId } = req.body;
 
-    if (!postId || !content || !sender) {
+    if (!postId || !content || !senderId) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message:
-          "Missing required fields: postId, content, sender are required",
+          "Missing required fields: postId, content, senderId are required",
       });
       return;
     }
@@ -28,10 +28,10 @@ export const createComment = async (
       return;
     }
 
-    if (!mongoose.Types.ObjectId.isValid(sender)) {
+    if (!mongoose.Types.ObjectId.isValid(senderId)) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: "Invalid sender",
+        message: "Invalid senderId",
       });
       return;
     }
@@ -46,10 +46,20 @@ export const createComment = async (
       return;
     }
 
+    // ensure user exists
+   const userExists = await findUserById(senderId);
+
+    if (!userExists) {
+      res.status(HTTP_STATUS.NOT_FOUND).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
+   }
     const newComment = new Comment({
       postId,
       content,
-      sender,
+      senderId,
     });
 
     const savedComment = await newComment.save();
