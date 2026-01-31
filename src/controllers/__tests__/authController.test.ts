@@ -404,11 +404,14 @@ describe("Auth Controller", () => {
         refreshToken: "validToken",
       };
 
-      process.env.TOKEN_SECRET = "";
-
+      // Set TOKEN_SECRET so verifyRefreshToken succeeds
+      process.env.TOKEN_SECRET = "test-secret";
+      // But then clear it after jwt.verify is called to make generateToken fail
       (jwt.verify as jest.Mock).mockImplementation(
         (token, secret, callback) => {
           callback(null, { _id: "507f1f77bcf86cd799439011" });
+          // Clear TOKEN_SECRET after verify succeeds
+          process.env.TOKEN_SECRET = "";
         },
       );
       (User.findById as jest.Mock).mockResolvedValue(mockUser);
@@ -422,6 +425,9 @@ describe("Auth Controller", () => {
       expect(sendMock).toHaveBeenCalledWith({
         message: "internal server error",
       });
+      
+      // Restore TOKEN_SECRET for other tests
+      process.env.TOKEN_SECRET = "test-secret";
     });
   });
 
