@@ -1,192 +1,36 @@
-########################################
-# GET API - GET ALL POSTS
-########################################
-
-GET http://localhost:3001/api/posts
-
-### Get All Posts
-# Method: GET
-# URL: /api/posts
-# Description: Retrieves all posts from the database as a JSON array
-# 
-# Expected Response: 200 OK
-# Response Format:
-# {
-#   "success": true,
-#   "message": "Posts retrieved successfully",
-#   "data": [
-#     {
-#       "_id": "string",
-#       "title": "string",
-#       "content": "string",
-#       "sender": {
-#           "id": number,
-#           "name": "string"
-#       },
-#       "createdAt": "ISO date string",
-#       "updatedAt": "ISO date string"
-#     },
-#     ...
-#   ]
-# }
-
-########################################
-# GET API - GET POSTS BY SENDER
-########################################
-
-GET http://localhost:3001/api/posts?senderId=<senderId>
-
-### Get Posts by Sender
-# Method: GET
-# URL: /api/posts?senderId=<sender_id>
-# Description: Retrieves all posts published by a specific sender, identified by sender ID
-# 
-# Expected Response: 200 OK
-# Response Format:
-# {
-#   "success": true,
-#   "message": "Posts by sender 123 retrieved successfully",
-#   "data": [
-#     {
-#       "_id": "string",
-#       "title": "string",
-#       "content": "string",
-#       "sender": {
-#           "id": 123,
-#           "name": "string"
-#       },
-#       "createdAt": "ISO date string",
-#       "updatedAt": "ISO date string"
-#     },
-#     ...
-#   ]
-# }
-
-########################################
-# GET API - GET POST BY ID
-########################################
-
-GET http://localhost:3001/api/posts/679272e5f4a6e8b001234567
-
-### Get Post by ID
-# Method: GET
-# URL: /api/posts/:id
-# Description: Retrieves a single post by its ID
-# 
-# Expected Response: 200 OK
-# Response Format:
-# {
-#   "success": true,
-#   "message": "Post retrieved successfully",
-#   "data": {
-#     "_id": "string",
-#     "title": "string",
-#     "content": "string",
-#     "sender": {
-#       "id": number,
-#       "name": "string"
-#     },
-#     "createdAt": "ISO date string",
-#     "updatedAt": "ISO date string"
-#   }
-# }
-# 
-# Expected Response (Not Found): 404 Not Found
-# Response Format:
-# {
-#   "success": false,
-#   "message": "Post not found"
-# }
-
-########################################
-# POST API - CREATE NEW POST
-########################################
-
+### Create a New Post
 POST http://localhost:3001/api/posts
 Content-Type: application/json
 
-### Create a New Post - Valid Request
-# Method: POST
-# URL: /api/posts
-# Content-Type: application/json
-# Description: Creates a new post in the database with title, content, and sender
-# 
-# Request Body Format:
-# {
-#   "title": string (required, 3-200 characters)
-#   "content": string (required, minimum 10 characters)
-#   "sender": {
-#     "id": number (required)
-#     "name": string (required, not empty)
-#   }
-# }
-# 
-# Expected Response: 200 Created
-# Response Format:
-# {
-#   "success": true,
-#   "message": "Post created successfully",
-#   "data": {
-#     "_id": "string",
-#     "title": "string",
-#     "content": "string",
-#     "sender": {
-#       "id": number,
-#       "name": "string"
-#     },
-#     "createdAt": "ISO date string",
-#     "updatedAt": "ISO date string"
-#   }
-# }
+{
+  "title": "Test Post",
+  "content": "This is a test post content with enough characters to meet the minimum requirement.",
+  "sender": {
+    "id": 123,
+    "name": "John Doe"
+  }
+}
 
-########################################
-# PUT API - UPDATE POST
-########################################
+###
 
-PUT http://localhost:3001/api/posts/679272e5f4a6e8b001234567
-Content-Type: application/json
+### Get All Posts
+GET http://localhost:3001/api/posts
+
+###
+
+### Get Post by ID
+GET http://localhost:3001/api/posts/69738d2fc742184ae8b302a5
+
+###
+
+### Get Posts by Sender
+GET http://localhost:3001/api/posts?senderId=123
+
+###
 
 ### Update a Post
-# Method: PUT
-# URL: /api/posts/:id
-# Content-Type: application/json
-# Description: Updates a post with new data, replacing its current content
-# Note: You can update any combination of fields (title, content, sender) - not all are required
-# 
-# Request Body Format:
-# {
-#   "title": string (optional, 3-200 characters)
-#   "content": string (optional, minimum 10 characters)
-#   "sender": {
-#     "id": number (optional)
-#     "name": string (optional)
-#   }
-# }
-# 
-# Expected Response: 200 OK
-# Response Format:
-# {
-#   "success": true,
-#   "message": "Post updated successfully",
-#   "data": {
-#     "_id": "string",
-#     "title": "string",
-#     "content": "string",
-#     "sender": {
-#       "id": number,
-#       "name": "string"
-#     },
-#     "createdAt": "ISO date string",
-#     "updatedAt": "ISO date string"
-#   }
-# }
-# 
-# Expected Response (Not Found): 404 Not Found
-# Response Format:
-# {
-#   "success": false,
-#   "message": "Post not found"
-# }
+PUT http://localhost:3001/api/posts/697dce5a70a3a6007f1ae136
+Content-Type: application/json
 
 {
   "title": "Updated Post Title",
@@ -197,125 +41,9 @@ Content-Type: application/json
   }
 }
 
-########################################
-# GET API - GET ALL USERS
-########################################
+###
 
-GET http://localhost:3001/api/users
-
-### Get All Users
-# Method: GET
-# URL: /api/users
-# Description: Retrieves all users from the database
-# 
-# Expected Response: 200 OK
-# Response Format:
-# {
-#   "success": true,
-#   "message": "Users retrieved successfully",
-#   "data": [
-#     {
-#       "_id": "string",
-#       "username": "string",
-#       "email": "string",
-#       "password": "string",
-#       "refreshTokens": [],
-#       "age": number,
-#       "bio": "string",
-#       "profilePicture": "string",
-#       "createdAt": "ISO date string",
-#       "updatedAt": "ISO date string"
-#     },
-#     ...
-#   ]
-# }
-
-########################################
-# GET API - GET USER BY ID
-########################################
-
-GET http://localhost:3001/api/users/<user_id>
-
-### Get User by ID
-# Method: GET
-# URL: /api/users/:id
-# Description: Retrieves a single user by their ID
-# 
-# Expected Response: 200 OK
-# Response Format:
-# {
-#   "success": true,
-#   "message": "User retrieved successfully",
-#   "data": {
-#     "_id": "string",
-#     "username": "string",
-#     "email": "string",
-#     "password": "string",
-#     "refreshTokens": [],
-#     "age": number,
-#     "bio": "string",
-#     "profilePicture": "string",
-#     "createdAt": "ISO date string",
-#     "updatedAt": "ISO date string"
-#   }
-# }
-#
-# Error Response (404):
-# {
-#   "success": false,
-#   "message": "User not found"
-# }
-
-########################################
-# PUT API - UPDATE USER
-########################################
-
-PUT http://localhost:3001/api/users/<user_id>
-Content-Type: application/json
-
-{
-  "username": "johndoe456",
-  "email": "john.updated@example.com",
-  "password": "newPassword123",
-  "age": 30,
-  "bio": "Updated bio - Senior software developer",
-  "profilePicture": "https://example.com/profile/updated.jpg"
-}
-
-### Update User
-# Method: PUT
-# URL: /api/users/:id
-# Description: Updates an existing user's information
-# 
-# Expected Response: 200 OK
-# Response Format:
-# {
-#   "success": true,
-#   "message": "User updated successfully",
-#   "data": {
-#     "_id": "string",
-#     "username": "string",
-#     "email": "string",
-#     "password": "string",
-#     "refreshTokens": [],
-#     "age": number,
-#     "bio": "string",
-#     "profilePicture": "string",
-#     "createdAt": "ISO date string",
-#     "updatedAt": "ISO date string"
-#   }
-# }
-#
-# Error Response (404):
-# {
-#   "success": false,
-#   "message": "User not found"
-# }
-
-########################################
-# POST API - CREATE USER
-########################################
-
+### Create a New User
 POST http://localhost:3001/api/users
 Content-Type: application/json
 
@@ -328,76 +56,34 @@ Content-Type: application/json
   "profilePicture": "https://example.com/profile/johndoe.jpg"
 }
 
-### Create User
-# Method: POST
-# URL: /api/users
-# Description: Creates a new user with username, email, and optional profile information
-# 
-# Required Fields:
-# - username: string (3-30 chars, alphanumeric and underscores only, unique)
-# - email: string (valid email format, unique)
-#
-# Optional Fields:
-# - password: string
-# - age: number (0-150)
-# - bio: string (max 500 chars)
-# - profilePicture: string (URL)
-# 
-# Expected Response: 201 Created
-# Response Format:
-# {
-#   "success": true,
-#   "message": "User created successfully",
-#   "data": {
-#     "_id": "string",
-#     "username": "string",
-#     "email": "string",
-#     "password": "string",
-#     "refreshTokens": [],
-#     "age": number,
-#     "bio": "string",
-#     "profilePicture": "string",
-#     "createdAt": "ISO date string",
-#     "updatedAt": "ISO date string"
-#   }
-# }
-#
-# Error Responses:
-# - 400 Bad Request: Missing required fields or validation errors
-# - 409 Conflict: Username or email already exists
+###
 
-########################################
-# DELETE API - DELETE USER BY ID
-########################################
+### Get All Users
+GET http://localhost:3001/api/users
 
-DELETE http://localhost:3001/api/users/<user_id>
+###
 
-### Delete User by ID
-# Method: DELETE
-# URL: /api/users/:id
-# Description: Deletes a user by their ID
-# 
-# Expected Response: 200 OK
-# Response Format:
-# {
-#   "success": true,
-#   "message": "User deleted successfully",
-#   "data": {
-#     "_id": "string",
-#     "username": "string",
-#     "email": "string",
-#     "password": "string",
-#     "refreshTokens": [],
-#     "age": number,
-#     "bio": "string",
-#     "profilePicture": "string",
-#     "createdAt": "ISO date string",
-#     "updatedAt": "ISO date string"
-#   }
-# }
-#
-# Error Response (404):
-# {
-#   "success": false,
-#   "message": "User not found"
-# }
+### Get User by ID
+GET http://localhost:3001/api/users/697dd9167755d88d33010f99
+
+###
+
+### Update a User
+PUT http://localhost:3001/api/users/697dd9167755d88d33010f99
+Content-Type: application/json
+
+{
+  "username": "johndoe456",
+  "email": "john.updated@example.com",
+  "password": "newPassword123",
+  "age": 30,
+  "bio": "Updated bio - Senior software developer",
+  "profilePicture": "https://example.com/profile/updated.jpg"
+}
+
+###
+
+### Delete a User
+DELETE http://localhost:3001/api/users/697dd9167755d88d33010f99
+
+###
