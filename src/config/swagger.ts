@@ -103,6 +103,46 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+        Post: {
+          type: "object",
+          required: ["title", "content", "user"],
+          properties: {
+            _id: {
+              type: "string",
+              description: "Auto-generated MongoDB ID",
+              example: "507f1f77bcf86cd799439011",
+            },
+            title: {
+              type: "string",
+              description: "Post title (3-200 characters)",
+              minLength: 3,
+              maxLength: 200,
+              example: "Introduction to Node.js",
+            },
+            content: {
+              type: "string",
+              description: "Post content (minimum 10 characters)",
+              minLength: 10,
+              example: "This is a comprehensive guide to getting started with Node.js development.",
+            },
+            user: {
+              type: "string",
+              description:
+                "Reference to the User who created the post (MongoDB ObjectId)",
+              example: "507f1f77bcf86cd799439012",
+            },
+            createdAt: {
+              type: "string",
+              format: "date-time",
+              description: "Timestamp when post was created",
+            },
+            updatedAt: {
+              type: "string",
+              format: "date-time",
+              description: "Timestamp when post was last updated",
+            },
+          },
+        },
         Comment: {
           type: "object",
           required: ["content", "postId", "userId"],
