@@ -157,6 +157,43 @@ describe("updateUser", () => {
     await updateUser(mockRequest as Request, mockResponse as Response);
     expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   });
+
+  it("should handle validation errors during update", async () => {
+    const mockUser = { _id: "123" };
+    mockRequest.params = { id: "123" };
+    mockRequest.body = { email: "invalid-email" };
+    (User.findById as jest.Mock).mockResolvedValue(mockUser);
+    const validationError = {
+      name: "ValidationError",
+      message: "Invalid email format",
+    };
+    (User.findByIdAndUpdate as jest.Mock).mockRejectedValue(validationError);
+    await updateUser(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.BAD_REQUEST);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "Validation error",
+      error: "Invalid email format",
+    });
+  });
+
+  it("should handle duplicate key errors during update", async () => {
+    const mockUser = { _id: "123" };
+    mockRequest.params = { id: "123" };
+    mockRequest.body = { username: "existinguser" };
+    (User.findById as jest.Mock).mockResolvedValue(mockUser);
+    const duplicateError = {
+      code: 11000,
+      keyPattern: { username: 1 },
+    };
+    (User.findByIdAndUpdate as jest.Mock).mockRejectedValue(duplicateError);
+    await updateUser(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.CONFLICT);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "Username already exists",
+    });
+  });
 });
 
 describe("createUser", () => {
@@ -207,6 +244,71 @@ describe("createUser", () => {
       success: true,
       message: "User created successfully",
       data: savedUser,
+    });
+  });
+
+  it("should return 409 if email already exists", async () => {
+    mockRequest.body = { username: "newuser", email: "existing@example.com" };
+    (User.findOne as jest.Mock)
+      .mockResolvedValueOnce(null) // username check passes
+      .mockResolvedValueOnce({ email: "existing@example.com" }); // email check fails
+    await createUser(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.CONFLICT);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "Email already exists",
+    });
+  });
+
+  it("should handle validation errors", async () => {
+    const userData = { username: "ab", email: "invalid" };
+    mockRequest.body = userData;
+    (User.findOne as jest.Mock).mockResolvedValue(null);
+    const validationError = {
+      name: "ValidationError",
+      message: "Validation failed",
+    };
+    const saveMock = jest.fn().mockRejectedValue(validationError);
+    (User as unknown as jest.Mock).mockImplementation(() => ({ save: saveMock }));
+    await createUser(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.BAD_REQUEST);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "Validation error",
+      error: "Validation failed",
+    });
+  });
+
+  it("should handle duplicate key errors", async () => {
+    const userData = { username: "newuser", email: "new@example.com" };
+    mockRequest.body = userData;
+    (User.findOne as jest.Mock).mockResolvedValue(null);
+    const duplicateError = {
+      code: 11000,
+      keyPattern: { username: 1 },
+    };
+    const saveMock = jest.fn().mockRejectedValue(duplicateError);
+    (User as unknown as jest.Mock).mockImplementation(() => ({ save: saveMock }));
+    await createUser(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.CONFLICT);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "Username already exists",
+    });
+  });
+
+  it("should handle internal server errors", async () => {
+    const userData = { username: "newuser", email: "new@example.com" };
+    mockRequest.body = userData;
+    (User.findOne as jest.Mock).mockResolvedValue(null);
+    const saveMock = jest.fn().mockRejectedValue(new Error("Server error"));
+    (User as unknown as jest.Mock).mockImplementation(() => ({ save: saveMock }));
+    await createUser(mockRequest as Request, mockResponse as Response);
+    expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    expect(jsonMock).toHaveBeenCalledWith({
+      success: false,
+      message: "Internal server error",
+      error: "Server error",
     });
   });
 });
