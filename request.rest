@@ -5,7 +5,7 @@ Content-Type: application/json
 {
   "title": "Test Post",
   "content": "This is a test post content with enough characters to meet the minimum requirement.",
-  "userId": "697df5ea994f0a817f86d429"
+  "userId": "697df689994f0a817f86d44b"
 }
 
 ###
@@ -20,8 +20,8 @@ GET http://localhost:3001/api/posts/69738d2fc742184ae8b302a5
 
 ###
 
-### Get Posts by Sender
-GET http://localhost:3001/api/posts?senderId=697dd9167755d88d33010f99
+### Get Posts by User ID
+GET http://localhost:3001/api/posts?userId=697dd9167755d88d33010f99
 
 ###
 
@@ -32,7 +32,7 @@ Content-Type: application/json
 {
   "title": "Updated Post Title",
   "content": "This is the updated content of the post. It has been modified with new information.",
-  "userId": "697df5ea994f0a817f86d429"
+  "userId": "697df689994f0a817f86d44b"
 }
 
 ###

@@ -23,12 +23,12 @@ export const getAllPosts = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-export const getPostsBySender = async (req: Request, res: Response): Promise<void> => {
+export const getPostsByUserId = async (req: Request, res: Response): Promise<void> => {
   try {
-    // senderId is guaranteed to exist because the router checks for it before calling this function
-    const { senderId } = req.query;
+    // userId is guaranteed to exist because the router checks for it before calling this function
+    const { userId } = req.query;
 
-    if (!mongoose.Types.ObjectId.isValid(senderId as string)) {
+    if (!mongoose.Types.ObjectId.isValid(userId as string)) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message: "Invalid user ID",
@@ -36,15 +36,15 @@ export const getPostsBySender = async (req: Request, res: Response): Promise<voi
       return;
     }
 
-    const posts = await Post.find({ user: senderId });
+    const posts = await Post.find({ user: userId });
 
     res.status(HTTP_STATUS.OK).json({
       success: true,
-      message: `Posts by sender ${senderId} retrieved successfully`,
+      message: `Posts by user ${userId} retrieved successfully`,
       data: posts,
     });
   } catch (error: any) {
-    console.error("Error retrieving posts by sender:", error);
+    console.error("Error retrieving posts by user:", error);
     res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Internal server error",

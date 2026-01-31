@@ -105,7 +105,7 @@ const options: swaggerJsdoc.Options = {
         },
         Comment: {
           type: "object",
-          required: ["content", "postId", "sender"],
+          required: ["content", "postId", "userId"],
           properties: {
             _id: {
               type: "string",
@@ -124,7 +124,7 @@ const options: swaggerJsdoc.Options = {
               description: "Reference to the Post (MongoDB ObjectId)",
               example: "507f1f77bcf86cd799439012",
             },
-            sender: {
+            userId: {
               type: "string",
               description:
                 "Reference to the User who created the comment (MongoDB ObjectId)",

@@ -26,7 +26,7 @@ const router = Router();
  *             required:
  *               - postId
  *               - content
- *               - sender
+ *               - userId
  *             properties:
  *               postId:
  *                 type: string
@@ -38,9 +38,9 @@ const router = Router();
  *                 minLength: 1
  *                 maxLength: 500
  *                 example: "Great post! Very informative."
- *               sender:
+ *               userId:
  *                 type: string
- *                 description: MongoDB ObjectId of the user (sender)
+ *                 description: MongoDB ObjectId of the user
  *                 example: "507f1f77bcf86cd799439012"
  *     responses:
  *       200:
@@ -70,7 +70,7 @@ const router = Router();
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: Missing required fields: postId, content, sender are required
+ *                   example: "Missing required fields: postId, content, userId are required"
  *       404:
  *         description: Post not found
  *         content:
@@ -333,7 +333,7 @@ router.get("/post/:postId", getCommentsByPostId);
  *                   example: false
  *                 message:
  *                   type: string
- *                   example: Missing required fields: content is required
+ *                   example: "Missing required fields: content is required"
  *       404:
  *         description: Comment not found
  *         content:

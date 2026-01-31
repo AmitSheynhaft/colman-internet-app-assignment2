@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { getAllPosts, getPostsBySender, getPostById, createPost, updatePost } from "../controllers/post.controller";
+import { getAllPosts, getPostsByUserId, getPostById, createPost, updatePost } from "../controllers/post.controller";
 
 const router = Router();
 
 router.get("/", (req, res, next) => {
-  if (req.query.senderId) {
-    return getPostsBySender(req, res);
+  if (req.query.userId) {
+    return getPostsByUserId(req, res);
   }
   next();
 });
