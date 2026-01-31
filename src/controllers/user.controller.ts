@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User.model";
 import { HTTP_STATUS, IUser } from "../constants/constants";
+import { findUserById } from "./shared/functions";
 
 export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -25,7 +26,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
   try {
     const { id } = req.params;
 
-    const user = await User.findById(id);
+    const user = await findUserById(id);
 
     if (!user) {
       res.status(HTTP_STATUS.NOT_FOUND).json({
