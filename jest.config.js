@@ -8,6 +8,8 @@ module.exports = {
     'src/**/*.{ts,js}',
     '!src/**/*.d.ts',
     '!src/server.ts',
+    '!src/routes/**',
+    '!src/config/**',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],

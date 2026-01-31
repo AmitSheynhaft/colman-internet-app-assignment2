@@ -128,7 +128,7 @@ DELETE http://localhost:3001/api/users/697df689994f0a817f86d44b
 # AUTH API - REGISTER
 ########################################
 
-POST http://localhost:3000/auth/register
+POST http://localhost:3001/auth/register
 Content-Type: application/json
 
 {
@@ -146,7 +146,7 @@ Content-Type: application/json
 # AUTH API - LOGIN
 ########################################
 
-POST http://localhost:3000/auth/login
+POST http://localhost:3001/auth/login
 Content-Type: application/json
 
 {
@@ -164,7 +164,7 @@ Content-Type: application/json
 # AUTH API - REFRESH TOKEN
 ########################################
 
-POST http://localhost:3000/auth/refresh
+POST http://localhost:3001/auth/refresh
 Content-Type: application/json
 
 {
@@ -181,7 +181,7 @@ Content-Type: application/json
 # AUTH API - LOGOUT
 ########################################
 
-POST http://localhost:3000/auth/logout
+POST http://localhost:3001/auth/logout
 Content-Type: application/json
 
 {

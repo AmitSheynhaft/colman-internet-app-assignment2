@@ -115,6 +115,20 @@ describe("Post Controller", () => {
         message: "Invalid user ID",
       });
     });
+
+    it("should handle database errors", async () => {
+      mockRequest.query = { userId: "507f1f77bcf86cd799439012" };
+      (Post.find as jest.Mock).mockRejectedValue(new Error("DB error"));
+
+      await getPostsByUserId(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: false,
+        message: "Internal server error",
+        error: "DB error",
+      });
+    });
   });
 
   describe("getPostById", () => {
@@ -150,6 +164,20 @@ describe("Post Controller", () => {
       expect(jsonMock).toHaveBeenCalledWith({
         success: false,
         message: "Post not found",
+      });
+    });
+
+    it("should handle database errors", async () => {
+      mockRequest.params = { id: "507f1f77bcf86cd799439011" };
+      (Post.findById as jest.Mock).mockRejectedValue(new Error("DB error"));
+
+      await getPostById(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: false,
+        message: "Internal server error",
+        error: "DB error",
       });
     });
   });
@@ -220,6 +248,74 @@ describe("Post Controller", () => {
         message: "User not found",
       });
     });
+
+    it("should return 400 if userId is invalid", async () => {
+      mockRequest.body = {
+        title: "Test Post",
+        content: "Test content",
+        userId: "invalid-id",
+      };
+
+      await createPost(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.BAD_REQUEST);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: false,
+        message: "Invalid userId",
+      });
+    });
+
+    it("should handle validation errors", async () => {
+      mockRequest.body = {
+        title: "Test",
+        content: "Test content",
+        userId: "507f1f77bcf86cd799439012",
+      };
+
+      (findUserById as jest.Mock).mockResolvedValue({ _id: "507f1f77bcf86cd799439012" });
+
+      const validationError = {
+        name: "ValidationError",
+        errors: {
+          title: { message: "Title is too short" },
+        },
+      };
+
+      (Post as any).mockImplementation(() => ({
+        save: jest.fn().mockRejectedValue(validationError),
+      }));
+
+      await createPost(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.BAD_REQUEST);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: false,
+        message: "Validation error",
+        errors: ["Title is too short"],
+      });
+    });
+
+    it("should handle database errors", async () => {
+      mockRequest.body = {
+        title: "Test Post",
+        content: "Test content",
+        userId: "507f1f77bcf86cd799439012",
+      };
+
+      (findUserById as jest.Mock).mockResolvedValue({ _id: "507f1f77bcf86cd799439012" });
+      (Post as any).mockImplementation(() => ({
+        save: jest.fn().mockRejectedValue(new Error("DB error")),
+      }));
+
+      await createPost(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: false,
+        message: "Internal server error",
+        error: "DB error",
+      });
+    });
   });
 
   describe("updatePost", () => {
@@ -280,6 +376,93 @@ describe("Post Controller", () => {
         success: false,
         message:
           "At least one field (title, content, or userId) must be provided for update",
+      });
+    });
+
+    it("should update post with userId successfully", async () => {
+      const mockUpdatedPost = {
+        _id: "507f1f77bcf86cd799439011",
+        title: "Test Post",
+        content: "Test content",
+        user: "507f1f77bcf86cd799439015",
+      };
+
+      mockRequest.params = { id: "507f1f77bcf86cd799439011" };
+      mockRequest.body = { userId: "507f1f77bcf86cd799439015" };
+
+      (findUserById as jest.Mock).mockResolvedValue({ _id: "507f1f77bcf86cd799439015" });
+      (Post.findByIdAndUpdate as jest.Mock).mockResolvedValue(mockUpdatedPost);
+
+      await updatePost(mockRequest as Request, mockResponse as Response);
+
+      expect(findUserById).toHaveBeenCalledWith("507f1f77bcf86cd799439015");
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.OK);
+    });
+
+    it("should return 400 if userId is invalid during update", async () => {
+      mockRequest.params = { id: "507f1f77bcf86cd799439011" };
+      mockRequest.body = { userId: "invalid-id" };
+
+      await updatePost(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.BAD_REQUEST);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: false,
+        message: "Invalid userId",
+      });
+    });
+
+    it("should return 404 if user not found during update", async () => {
+      mockRequest.params = { id: "507f1f77bcf86cd799439011" };
+      mockRequest.body = { userId: "507f1f77bcf86cd799439015" };
+
+      (findUserById as jest.Mock).mockResolvedValue(null);
+
+      await updatePost(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.NOT_FOUND);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: false,
+        message: "User not found",
+      });
+    });
+
+    it("should handle validation errors during update", async () => {
+      mockRequest.params = { id: "507f1f77bcf86cd799439011" };
+      mockRequest.body = { title: "T" };
+
+      const validationError = {
+        name: "ValidationError",
+        errors: {
+          title: { message: "Title too short" },
+        },
+      };
+
+      (Post.findByIdAndUpdate as jest.Mock).mockRejectedValue(validationError);
+
+      await updatePost(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.BAD_REQUEST);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: false,
+        message: "Validation error",
+        errors: ["Title too short"],
+      });
+    });
+
+    it("should handle database errors during update", async () => {
+      mockRequest.params = { id: "507f1f77bcf86cd799439011" };
+      mockRequest.body = { title: "Updated Title" };
+
+      (Post.findByIdAndUpdate as jest.Mock).mockRejectedValue(new Error("DB error"));
+
+      await updatePost(mockRequest as Request, mockResponse as Response);
+
+      expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+      expect(jsonMock).toHaveBeenCalledWith({
+        success: false,
+        message: "Internal server error",
+        error: "DB error",
       });
     });
   });
