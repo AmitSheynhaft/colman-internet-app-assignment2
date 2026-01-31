@@ -9,7 +9,7 @@ import {
 } from "../comment.controller";
 import Comment from "../../models/Comment.model";
 import { HTTP_STATUS } from "../../constants/constants";
-import { findPostById } from "../shared/functions";
+import { findPostById, findUserById } from "../shared/functions";
 
 jest.mock("../../models/Comment.model");
 jest.mock("../shared/functions");
@@ -33,13 +33,16 @@ describe("Comment Controller", () => {
       const mockCommentData = {
         postId: "507f1f77bcf86cd799439011",
         content: "Great post!",
-        sender: "507f1f77bcf86cd799439012",
+        userId: "507f1f77bcf86cd799439012",
       };
       const savedComment = { _id: "123", ...mockCommentData };
 
       mockRequest.body = mockCommentData;
       (findPostById as jest.Mock).mockResolvedValue({
         _id: mockCommentData.postId,
+      });
+      (findUserById as jest.Mock).mockResolvedValue({
+        _id: mockCommentData.userId,
       });
       const saveMock = jest.fn().mockResolvedValue(savedComment);
       (Comment as unknown as jest.Mock).mockImplementation(() => ({
@@ -65,7 +68,7 @@ describe("Comment Controller", () => {
       expect(jsonMock).toHaveBeenCalledWith({
         success: false,
         message:
-          "Missing required fields: postId, content, sender are required",
+          "Missing required fields: postId, content, userId are required",
       });
     });
 
@@ -73,7 +76,7 @@ describe("Comment Controller", () => {
       mockRequest.body = {
         postId: "invalid-id",
         content: "Test",
-        sender: "507f1f77bcf86cd799439012",
+        userId: "507f1f77bcf86cd799439012",
       };
 
       await createComment(mockRequest as Request, mockResponse as Response);
@@ -89,7 +92,7 @@ describe("Comment Controller", () => {
       mockRequest.body = {
         postId: "507f1f77bcf86cd799439011",
         content: "Test",
-        sender: "invalid-sender",
+        userId: "invalid-user-id",
       };
 
       await createComment(mockRequest as Request, mockResponse as Response);
@@ -97,7 +100,7 @@ describe("Comment Controller", () => {
       expect(statusMock).toHaveBeenCalledWith(HTTP_STATUS.BAD_REQUEST);
       expect(jsonMock).toHaveBeenCalledWith({
         success: false,
-        message: "Invalid sender",
+        message: "Invalid userId",
       });
     });
 
@@ -105,7 +108,7 @@ describe("Comment Controller", () => {
       mockRequest.body = {
         postId: "507f1f77bcf86cd799439011",
         content: "Test",
-        sender: "507f1f77bcf86cd799439012",
+        userId: "507f1f77bcf86cd799439012",
       };
       (findPostById as jest.Mock).mockResolvedValue(null);
 
@@ -122,10 +125,13 @@ describe("Comment Controller", () => {
       mockRequest.body = {
         postId: "507f1f77bcf86cd799439011",
         content: "Test",
-        sender: "507f1f77bcf86cd799439012",
+        userId: "507f1f77bcf86cd799439012",
       };
       (findPostById as jest.Mock).mockResolvedValue({
         _id: "507f1f77bcf86cd799439011",
+      });
+      (findUserById as jest.Mock).mockResolvedValue({
+        _id: "507f1f77bcf86cd799439012",
       });
 
       const validationError = {
@@ -153,10 +159,13 @@ describe("Comment Controller", () => {
       mockRequest.body = {
         postId: "507f1f77bcf86cd799439011",
         content: "Test",
-        sender: "507f1f77bcf86cd799439012",
+        userId: "507f1f77bcf86cd799439012",
       };
       (findPostById as jest.Mock).mockResolvedValue({
         _id: "507f1f77bcf86cd799439011",
+      });
+      (findUserById as jest.Mock).mockResolvedValue({
+        _id: "507f1f77bcf86cd799439012",
       });
 
       const saveMock = jest.fn().mockRejectedValue(new Error("Database error"));

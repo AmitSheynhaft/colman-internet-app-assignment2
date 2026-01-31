@@ -9,13 +9,13 @@ export const createComment = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { postId, content, senderId } = req.body;
+    const { postId, content, userId } = req.body;
 
-    if (!postId || !content || !senderId) {
+    if (!postId || !content || !userId) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message:
-          "Missing required fields: postId, content, senderId are required",
+          "Missing required fields: postId, content, userId are required",
       });
       return;
     }
@@ -28,10 +28,10 @@ export const createComment = async (
       return;
     }
 
-    if (!mongoose.Types.ObjectId.isValid(senderId)) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: "Invalid senderId",
+        message: "Invalid userId",
       });
       return;
     }
@@ -47,7 +47,7 @@ export const createComment = async (
     }
 
     // ensure user exists
-   const userExists = await findUserById(senderId);
+   const userExists = await findUserById(userId);
 
     if (!userExists) {
       res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -59,7 +59,7 @@ export const createComment = async (
     const newComment = new Comment({
       postId,
       content,
-      senderId,
+      user: userId,
     });
 
     const savedComment = await newComment.save();

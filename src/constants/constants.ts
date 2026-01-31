@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import mongoose from "mongoose";
 
 export const HTTP_STATUS = {
   OK: 200,
@@ -24,10 +25,7 @@ export interface IUser extends Document {
 export interface IPost extends Document {
   title: string;
   content: string;
-  sender: {
-    id: number;
-    name: string;
-  };
+  user: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
