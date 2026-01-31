@@ -78,3 +78,6 @@ Configure these variables in your `.env` file:
 ## License
 
 ISC
+
+<img width="751" height="1093" alt="image" src="https://github.com/user-attachments/assets/0a274125-8bce-4a45-a838-d648edfbb1a0" />
+
